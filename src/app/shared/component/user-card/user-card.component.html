@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-md-4">
+        <mat-card>
+            <img 
+            mat-card-image
+            #imgurl
+            (error)="imgurl.src = '';imgurl.src = defaultImage"
+            [src]="userObj.imageUrl ||defaultImage" 
+            [alt]="userObj.name"
+            [title]="userObj.name">
+
+        <h3 class="font-weight-bold">{{userObj.name}} ({{userObj.role}})</h3>
+        <p >{{userObj.description}}</p>
+
+        <mat-card-actions class="d-flex justify-content-between">
+            <button mat-raised-button color="primary" (click)="navigateToform()">Edit</button>
+            <button mat-raised-button color="warn" (click)="onRemove()">Remove</button>
+        </mat-card-actions>
+
+        </mat-card>
+    </div>
+    <div class="col-md-8">
+        <mat-card>
+            <h3 class="font-weight-bold">
+                Basic Information
+            </h3>
+
+            <p class="font-weight-bold">UserId: {{userObj.id}}</p>
+
+        </mat-card>
+
+        <mat-card class="my-3">
+            <h3 class="font-weight-bold">
+                Skills
+            </h3>
+
+          <mat-chip-list>
+                <mat-chip *ngFor=" let skill of userObj.skills">
+                    {{skill}}
+                </mat-chip>
+          </mat-chip-list>
+
+
+        </mat-card>
+
+
+        <mat-card>
+            <div class="row">
+                <div class="col-6">
+                    <h4 class="font-weight-bold">
+                        Current Address
+                    </h4>
+                    <p class="font-weight-bold">{{userObj.currentAddress.country | titlecase}}</p>
+                    <p class="font-weight-bold">{{userObj.currentAddress.state | titlecase}}</p>
+                    <p class="font-weight-bold">{{userObj.currentAddress.city | titlecase}}</p>
+                    <p class="font-weight-bold">{{userObj.currentAddress.zipcode}}</p>
+                </div>
+                <div class="col-6">
+                    <h4 class="font-weight-bold">
+                        Permanent Address
+                    </h4>
+                    <p class="font-weight-bold">{{userObj.permanentAddress.country | titlecase}}</p>
+                    <p class="font-weight-bold">{{userObj.permanentAddress.state | titlecase}}</p>
+                    <p class="font-weight-bold">{{userObj.permanentAddress.city | titlecase}}</p>
+                    <p class="font-weight-bold">{{userObj.permanentAddress.zipcode }}</p>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</div>

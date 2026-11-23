@@ -1,0 +1,73 @@
+<main class="auth-page">
+  <section class="visual-panel" aria-label="Welcome">
+    <div class="visual-content">
+      <a class="brand" routerLink="/"><span class="brand-mark">N</span> northstar</a>
+      <div class="visual-copy">
+        <span class="eyebrow">A better way to work</span>
+        <h1>Make room for<br><em>what matters.</em></h1>
+        <p>Bring your people, projects, and ideas together in one calm, clear space.</p>
+      </div>
+      <div class="visual-foot"><span class="avatars"><i>J</i><i>M</i><i>A</i></span><span>Good things happen together.</span></div>
+    </div>
+    <div class="orb orb-one"></div><div class="orb orb-two"></div>
+  </section>
+
+  <section class="form-panel">
+    <div class="mobile-brand"><span class="brand-mark">N</span> northstar</div>
+    <div class="auth-card">
+      <ng-container [ngSwitch]="mode">
+        <ng-container *ngSwitchCase="'login'">
+          <div class="heading"><span class="eyebrow">WELCOME BACK</span><h2>Sign in to your account</h2><p>Pick up right where you left off.</p></div>
+          <div class="mode-tabs" role="tablist" aria-label="Account access">
+            <button type="button" class="active" role="tab" aria-selected="true">Sign in</button>
+            <button type="button" role="tab" aria-selected="false" (click)="setMode('register')">Create account</button>
+          </div>
+          <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" novalidate>
+            <label for="login-email">Email address</label>
+            <input id="login-email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email" required [class.invalid]="loginEmailControl.invalid && (loginEmailControl.touched || submitted)">
+            <small class="field-error" *ngIf="loginEmailControl.errors?.['required'] && (loginEmailControl.touched || submitted)">Email is required.</small>
+            <small class="field-error" *ngIf="loginEmailControl.errors?.['email'] && (loginEmailControl.touched || submitted)">Enter a valid email address.</small>
+            <div class="label-row"><label for="login-password">Password</label><button type="button" class="text-button" (click)="setMode('forgot')">Forgot password?</button></div>
+            <div class="password-wrap"><input id="login-password" [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Enter your password" autocomplete="current-password" required [class.invalid]="loginPasswordControl.invalid && (loginPasswordControl.touched || submitted)"><button type="button" class="visibility" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">{{ showPassword ? 'Hide' : 'Show' }}</button></div>
+            <small class="field-error" *ngIf="loginPasswordControl.errors?.['required'] && (loginPasswordControl.touched || submitted)">Password is required.</small>
+            <p class="notice" [class.error]="messageType === 'error'" *ngIf="message" role="status">{{ message }}</p>
+            <button class="submit-button" type="submit" [disabled]="loading">{{ loading ? 'Signing in...' : 'Sign in' }} <span aria-hidden="true">&rarr;</span></button>
+          </form>
+          <p class="switch-copy">New to northstar? <button type="button" class="text-button" (click)="setMode('register')">Create an account</button></p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'register'">
+          <div class="heading"><span class="eyebrow">USER MANAGEMENT</span><h2>Create an account</h2><p>New accounts are created by a signed-in superadmin.</p></div>
+          <div class="mode-tabs" role="tablist" aria-label="Account access"><button type="button" role="tab" aria-selected="false" (click)="setMode('login')">Sign in</button><button type="button" class="active" role="tab" aria-selected="true">Create account</button></div>
+          <form [formGroup]="registerForm" (ngSubmit)="submitRegister()" novalidate>
+            <label for="reg-email">Email address</label>
+            <input id="reg-email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email" [class.invalid]="registerEmailControl.invalid && (registerEmailControl.touched || submitted)">
+            <small class="field-error" *ngIf="registerEmailControl.invalid && (registerEmailControl.touched || submitted)">Enter a valid email address.</small>
+            <div class="two-columns">
+              <div><label for="reg-password">Password</label><div class="password-wrap"><input id="reg-password" [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="12+ characters" autocomplete="new-password"><button type="button" class="visibility" (click)="showPassword = !showPassword">{{ showPassword ? 'Hide' : 'Show' }}</button></div><small class="field-error" *ngIf="registerPasswordControl.invalid && (registerPasswordControl.touched || submitted)">Use 12+ characters with uppercase, lowercase, number, and symbol.</small></div>
+              <div><label for="reg-confirm">Confirm password</label><div class="password-wrap"><input id="reg-confirm" [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" placeholder="Repeat password" autocomplete="new-password"><button type="button" class="visibility" (click)="showConfirmPassword = !showConfirmPassword">{{ showConfirmPassword ? 'Hide' : 'Show' }}</button></div><small class="field-error" *ngIf="(registerConfirmPasswordControl.invalid || registerForm.errors?.['passwordsMismatch']) && (registerConfirmPasswordControl.touched || submitted)">{{ registerConfirmPasswordControl.errors?.['required'] ? 'Please confirm your password.' : 'Passwords do not match.' }}</small></div>
+            </div>
+            <label for="reg-role">Role</label>
+            <select id="reg-role" class="form-control" formControlName="role"><option value="buyer">Buyer</option><option value="admin">Admin</option><option value="superAdmin">Superadmin</option></select>
+            <small class="field-error" *ngIf="registerRoleControl.invalid && (registerRoleControl.touched || submitted)">Choose a role.</small>
+            <p class="notice" [class.error]="messageType === 'error'" *ngIf="message" role="status">{{ message }}</p>
+            <button class="submit-button" type="submit" [disabled]="loading">{{ loading ? 'Creating account...' : 'Create account' }} <span aria-hidden="true">&rarr;</span></button>
+          </form>
+          <p class="switch-copy">Already have an account? <button type="button" class="text-button" (click)="setMode('login')">Sign in</button></p>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'forgot'">
+          <div class="heading"><span class="eyebrow">ACCOUNT HELP</span><h2>Forgot your password?</h2><p>Enter your email and we will help you get back in.</p></div>
+          <form class="forgot-form" [formGroup]="forgotForm" (ngSubmit)="submitForgot()" novalidate>
+            <label for="forgot-email">Email address</label><input id="forgot-email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email" [class.invalid]="forgotEmailControl.invalid && (forgotEmailControl.touched || submitted)">
+            <small class="field-error" *ngIf="forgotEmailControl.invalid && (forgotEmailControl.touched || submitted)">Enter a valid email address.</small>
+            <p class="notice" [class.error]="messageType === 'error'" *ngIf="message" role="status">{{ message }}</p>
+            <button class="submit-button" type="submit" [disabled]="loading">{{ loading ? 'Sending...' : 'Continue' }} <span aria-hidden="true">&rarr;</span></button>
+          </form>
+          <p class="switch-copy"><button type="button" class="text-button back-button" (click)="setMode('login')">&larr; Back to sign in</button></p>
+        </ng-container>
+      </ng-container>
+      <p class="legal">By continuing, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+  </section>
+</main>
